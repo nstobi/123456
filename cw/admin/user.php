@@ -4,6 +4,7 @@ session_start();
 // Check if the user is logged in and has the "user" role
 if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'user') {
     // Redirect to the login page or display an error message
+    echo 'qweqweqeqeqweq';
     header("Location: ../admin/login_form.php");
     exit();
 }

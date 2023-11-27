@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Check if the username already exists
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
     $stmt->execute([$name]);
     $existingUser = $stmt->fetch();
 
@@ -39,8 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Insert user into the database
         try {
-            $stmt = $conn->prepare("INSERT INTO users (username, gmail, password, user_type) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$name, $email, password_hash($password, PASSWORD_BCRYPT), $userType]);
+            $stmt = $pdo->prepare("INSERT INTO users (username, gmail, password, user_type) VALUES (?, ?, ?, ?)");
+            // password_hash($password, PASSWORD_BCRYPT)
+            $stmt->execute([$name, $email, $password, $userType]);
 
             // Redirect to a success page or login page
             header("Location: ../admin/login_form.php");

@@ -1,37 +1,45 @@
 <?php
-// Include the database connection file
-include('../includes/DatabaseConnection.php');
+require_once '../includes/DatabaseConnection.php';
 
 // Start the session
 session_start();
 
 // Check if the form is submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get user input from the form
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get username and password from the form
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Prepare and execute the SQL query to fetch user details
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->execute([$username]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    try {
+        // Prepare the SQL statement
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username AND password = :password");
 
-    // Verify if the user exists and the password is correct
-    if ($user && password_verify($password, $user['password'])) {
-        // Set session variables for the logged-in user
-        $_SESSION['user_id'] = $user['user_id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['user_type'] = $user['user_type'];
+        // Bind parameters
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':password', $password);
 
-        // Redirect to a dashboard or home page
-        header("Location: ../index.php");
-        exit();
-    } else {
-        // Display an error message if login fails
-        $error_message = "Invalid username or password";
+        // Execute the query
+        $stmt->execute();
+
+        // Check if a row is returned
+        if ($stmt->rowCount() > 0) {
+            // User is authenticated
+            // lấy thông tin từ database truyền vào biến $user 
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            // tạo 1 session tên là user để lưu trữ biến $user khi nào chuyển sang màn hình khác thì có thể lấy biến đấy ra được
+            // phải có session_start(); 
+            $_SESSION['user'] = $user;
+            // Redirect to dashboard.php
+            header("Location: dashboard.php");
+            exit();
+        } else {
+            // Invalid credentials
+            echo "Invalid username or password.";
+        }
+    } catch (PDOException $e) {
+        die("Error: " . $e->getMessage());
     }
 }
-
 ?>
 
 <!DOCTYPE html>

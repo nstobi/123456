@@ -1,41 +1,56 @@
+<?php
+// Start the session
+session_start();
+
+// Check if the user array is set in the session
+if (!isset($_SESSION['user'])) {
+    // Redirect to the login page if not set
+    header("Location: login_form.php");
+    exit();
+}
+
+// Access user information from the session
+$user = $_SESSION['user'];
+
+// Access the username and other user details from the user array
+$username = $user['username'];
+$userType = $user['user_type'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>Tobi</title>
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body>
-
-    <div class="top-bar">
-        <ul>
-            <li><a href="/admin">Dashboard</a></li>
-            <li><a href="/admin/posts">Posts</a></li>
-            <li><a href="/admin/users">Users</a></li>
-            <li><a href="/admin/settings">Settings</a></li>
-        </ul>
+    <header>
+        <h1 class="logo">Tobi</h1>
+        <nav>
+            <ul class="nav_links">
+                <li><a href="#">Home</a></li>
+                <?php
+                // Check if the user is logged in
+                if (isset($_SESSION['user'])) {
+                    // Display "Add Post" button if the user is logged in
+                    echo '<li><a href="view_post.php">Posts</a></li>';
+                }
+                ?>
+                <li><a href="../admin/logout.php">Logout</a></li>
+                <li><a href="#">About</a></li>
+                <?php echo '<li>Welcome, ' . $_SESSION['user']['username'] . '!</li>'; ?>
+            </ul>
+        </nav>
+        <a href="#" class="cta"><button>Contact</button></a>
+    </header>
+    <div class="content">
+        <h1>TOBI</h1>
+        <p>Place to share your posts/questions</p>
     </div>
-
-    <div class="container">
-        <h1>Add New Post</h1>
-
-        <form action="add-post" method="post" enctype="multipart/form-data">
-            <input type="text" name="title" placeholder="Post Title">
-            <input type="file" name="image" placeholder="Post Image">
-            <textarea name="content" placeholder="Post Content"></textarea>
-
-            <select name="category">
-                <option value="">Select Category</option>
-                <option value="news">News</option>
-                <option value="tutorials">Tutorials</option>
-                <option value="tips-and-tricks">Tips and Tricks</option>
-            </select>
-
-            <input type="submit" value="Add Post">
-        </form>
-    </div>
-
 </body>
 
 </html>

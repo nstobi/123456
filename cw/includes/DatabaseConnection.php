@@ -5,4 +5,4 @@ $username = "root";
 $password = ""; 
 $dbname = "coursework";
 
-$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+$pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
