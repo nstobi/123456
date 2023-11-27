@@ -1,61 +1,39 @@
 <?php
-// Start the session
-session_start();
+// Include the database connection file
+include '../includes/DatabaseConnection.php';
 
-// Check if the user is logged in
-if (!isset($_SESSION['user'])) {
-    // Redirect to the login page if not logged in
-    header("Location: ../admin/login_form.php");
-    exit();
+// Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        // Prepare the SQL statement
+        $stmt = $pdo->prepare("INSERT INTO posts (name, title, content, category, image, date) 
+                              VALUES (:name, :title, :content, :category, :image, :date)");
+
+        // Bind parameters
+        $stmt->bindParam(':name', $_POST['name']);
+        $stmt->bindParam(':title', $_POST['title']);
+        $stmt->bindParam(':content', $_POST['content']);
+        $stmt->bindParam(':category', $_POST['category']);
+
+        // Handle image upload
+        $imagePath = 'uploads/' . $_FILES['image']['name'];
+        move_uploaded_file($_FILES['image']['tmp_name'], $imagePath);
+
+        $stmt->bindParam(':image', $imagePath);
+
+        // Set the current date
+        $date = date("Y-m-d");
+        $stmt->bindParam(':date', $date);
+
+        // Execute the statement
+        $stmt->execute();
+
+        // Redirect to a success page or wherever you want
+        header('Location: success.php');
+        exit();
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
 }
 
-// Access user information
-// user (user_id, username, password, gmail, user_type)
-$user = $_SESSION['user'];
-
-// Access the username from the user array
-// lấy cột username trong bảng user để gán vào $username
-$username = $user['username'];
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <title>Tobi</title>
-    <link rel="stylesheet" href="../css/dashboard.css">
-</head>
-
-<body>
-    <h2>Welcome, <?php echo $username; ?>!</h2>
-    <div class="top-bar">
-        <ul>
-            <li><a href="dashboard.php">Dashboard</a></li>
-            <li><a href="posts.php">Posts</a></li>
-            <li><a href="/admin/users">Users</a></li>
-            <li><a href="/admin/settings">Settings</a></li>
-        </ul>
-    </div>
-
-    <div class="container">
-        <h1>Add New Post</h1>
-
-        <form action="add-post" method="post" enctype="multipart/form-data">
-            <input type="text" name="title" placeholder="Post Title">
-            <input type="file" name="image" placeholder="Post Image">
-            <textarea name="content" placeholder="Post Content"></textarea>
-
-            <select name="category">
-                <option value="">Select Category</option>
-                <option value="#">tobi</option>
-                <option value="#">tobi1</option>
-                <option value="#">tobi2</option>
-            </select>
-
-            <input type="submit" value="Add Post">
-        </form>
-    </div>
-
-</body>
-
-</html>

@@ -1,5 +1,5 @@
 <?php
-require_once '../includes/DatabaseConnection.php';
+include '../includes/DatabaseConnection.php';
 
 // Start the session
 session_start();

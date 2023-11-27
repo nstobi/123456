@@ -37,7 +37,7 @@ $userType = $user['user_type'];
                 // Check if the user is logged in
                 if (isset($_SESSION['user'])) {
                     // Display "Add Post" button if the user is logged in
-                    echo '<li><a href="view_post.php">Posts</a></li>';
+                    echo '<li><a href="posts.php">Posts</a></li>';
                 }
                 ?>
                 <li><a href="../admin/logout.php">Logout</a></li>

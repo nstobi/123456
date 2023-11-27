@@ -1,41 +1,101 @@
 <?php
-// Include your database connection
-include('../includes/DatabaseConnection.php');
+
+include '../includes/DatabaseConnection.php';
+
+session_start();
+
+function getPosts($pdo) {
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY date DESC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Handle the exception, e.g., log it or display an error message
+        echo "Error: " . $e->getMessage();
+        return []; // Return an empty array in case of an error
+    }
+}
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
-
+<head>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Posts</title>
-    <!-- Add your CSS styles here -->
-    <link rel="stylesheet" href="../css/styles.css">
+    <title>Post Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .post {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .post h2 {
+            color: #333;
+        }
+
+        .post p {
+            color: #666;
+        }
+    </style>
 </head>
-
+</head>
 <body>
-    <?php include('header_posts.php'); ?>
 
-    <div class="content">
-        <h1>Posts</h1>
+    <header>
+        <h1>Post Viewer</h1>
+    </header>
 
+    <main>
         <?php
-        // Fetch posts from the database
-        $stmt = $pdo->query("SELECT * FROM posts");
-        $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Display posts
+        $posts = getPosts($pdo);
         foreach ($posts as $post) {
-            echo '<div class="post">';
-            echo '<h2>' . htmlspecialchars($post['title']) . '</h2>';
-            echo '<p>' . htmlspecialchars($post['content']) . '</p>';
-            echo '<p><strong>Category:</strong> ' . htmlspecialchars($post['category']) . '</p>';
-            echo '<p><strong>Date:</strong> ' . $post['date'] . '</p>';
-            echo '</div>';
+            ?>
+            <div class="post">
+                <h2><?= htmlspecialchars($post['title']) ?></h2>
+                <p><?= htmlspecialchars($post['content']) ?></p>
+                <!-- Add more details as needed, e.g., category, image, date -->
+            </div>
+            <?php
         }
         ?>
-    </div>
-</body>
+    </main>
 
+    <!-- Add Post button -->
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="../templates/addpost.html.php" style="text-decoration: none; padding: 10px 20px; background-color: #4CAF50; color: white; border-radius: 5px;">Add Post</a>
+    </div>
+
+</body>
 </html>
+
+<?php
+// Close the database connection
+$pdo = null;
+?>
