@@ -4,7 +4,8 @@ include '../includes/DatabaseConnection.php';
 
 session_start();
 
-function getPosts($pdo) {
+function getPosts($pdo)
+{
     try {
         $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY date DESC");
         $stmt->execute();
@@ -21,51 +22,15 @@ function getPosts($pdo) {
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post Viewer</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-        }
-
-        main {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .post {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .post h2 {
-            color: #333;
-        }
-
-        .post p {
-            color: #666;
-        }
-    </style>
+    <!-- custom css -->
+    <link rel="stylesheet" href="../css/posts.css">
 </head>
-</head>
+
 <body>
 
     <header>
@@ -76,13 +41,28 @@ function getPosts($pdo) {
         <?php
         $posts = getPosts($pdo);
         foreach ($posts as $post) {
-            ?>
+        ?>
             <div class="post">
                 <h2><?= htmlspecialchars($post['title']) ?></h2>
                 <p><?= htmlspecialchars($post['content']) ?></p>
-                <!-- Add more details as needed, e.g., category, image, date -->
+                <p><strong>Posted by:</strong> <?= htmlspecialchars($post['name']) ?></p>
+                <p><strong>Category:</strong> <?= htmlspecialchars($post['category']) ?></p>
+                <p><strong>Posted on:</strong> <?= htmlspecialchars($post['date']) ?></p>
+                <?php
+                // Display the image if it exists
+                if (!empty($post['image'])) {
+                ?>
+                    <img src="<?= htmlspecialchars($post['image']) ?>" alt="Post Image">
+                <?php
+                }
+                ?>
+
+                <!-- Edit Post button -->
+                <a href="edit_post.php?id=<?= $post['post_id'] ?>" style="text-decoration: none; padding: 5px 10px; background-color: #007BFF; color: white; border-radius: 3px;">Edit Post</a>
+                <!-- Delete Post button -->
+                <a href="delete_post.php?id=<?= $post['post_id'] ?>" style="text-decoration: none; padding: 5px 10px; background-color: #DC3545; color: white; border-radius: 3px; margin-left: 10px;" onclick="return confirm('Are you sure you want to delete this post?')">Delete Post</a>
             </div>
-            <?php
+        <?php
         }
         ?>
     </main>
@@ -93,6 +73,7 @@ function getPosts($pdo) {
     </div>
 
 </body>
+
 </html>
 
 <?php
