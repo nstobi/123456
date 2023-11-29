@@ -41,35 +41,52 @@ function getPosts($pdo)
         <?php
         $posts = getPosts($pdo);
         foreach ($posts as $post) {
-        ?>
+            ?>
             <div class="post">
-                <h2><?= htmlspecialchars($post['title']) ?></h2>
-                <p><?= htmlspecialchars($post['content']) ?></p>
-                <p><strong>Posted by:</strong> <?= htmlspecialchars($post['name']) ?></p>
-                <p><strong>Category:</strong> <?= htmlspecialchars($post['category']) ?></p>
-                <p><strong>Posted on:</strong> <?= htmlspecialchars($post['date']) ?></p>
+                <h2>
+                    <?= htmlspecialchars($post['title']) ?>
+                </h2>
+                <p>
+                    <?= htmlspecialchars($post['content']) ?>
+                </p>
+                <p><strong>Posted by:</strong>
+                    <?= htmlspecialchars($post['name']) ?>
+                </p>
+                <p><strong>Category:</strong>
+                    <?= htmlspecialchars($post['category']) ?>
+                </p>
+                <p><strong>Posted on:</strong>
+                    <?= htmlspecialchars($post['date']) ?>
+                </p>
                 <?php
                 // Display the image if it exists
                 if (!empty($post['image'])) {
-                ?>
+                    ?>
                     <img src="<?= htmlspecialchars($post['image']) ?>" alt="Post Image">
-                <?php
+                    <?php
                 }
                 ?>
 
                 <!-- Edit Post button -->
-                <a href="edit_post.php?id=<?= $post['post_id'] ?>" style="text-decoration: none; padding: 5px 10px; background-color: #007BFF; color: white; border-radius: 3px;">Edit Post</a>
+                <a href="edit_post.php?id=<?= $post['post_id'] ?>"
+                    style="text-decoration: none; padding: 5px 10px; background-color: #007BFF; color: white; border-radius: 3px;">Edit
+                    Post</a>
+
                 <!-- Delete Post button -->
-                <a href="delete_post.php?id=<?= $post['post_id'] ?>" style="text-decoration: none; padding: 5px 10px; background-color: #DC3545; color: white; border-radius: 3px; margin-left: 10px;" onclick="return confirm('Are you sure you want to delete this post?')">Delete Post</a>
+                <a href="delete_post.php?id=<?= $post['post_id'] ?>"
+                    style="text-decoration: none; padding: 5px 10px; background-color: #DC3545; color: white; border-radius: 3px; margin-left: 10px;"
+                    onclick="return confirm('Are you sure you want to delete this post?')">Delete Post</a>
             </div>
-        <?php
+            <?php
         }
         ?>
     </main>
 
     <!-- Add Post button -->
     <div style="text-align: center; margin-top: 20px;">
-        <a href="../templates/addpost.html.php" style="text-decoration: none; padding: 10px 20px; background-color: #4CAF50; color: white; border-radius: 5px;">Add Post</a>
+        <a href="../templates/addpost.html.php"
+            style="text-decoration: none; padding: 10px 20px; background-color: #4CAF50; color: white; border-radius: 5px;">Add
+            Post</a>
     </div>
 
 </body>
